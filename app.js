@@ -1,7 +1,8 @@
 let canvas = document.getElementById("canvas");
 let g = canvas.getContext("2d");
 
-const gamesstate_start = 0;
+
+const gamestate_start = 0;
 const gamesstate_ingame = 1;
 const gamesstate_gameover = 2;
 
@@ -9,10 +10,13 @@ const ingamestate_start = 0;
 const ingamestate_roll = 1;
 const ingamestate_end = 0;
 
+let gameState = gamestate_start;
+let ingameState = ingamestate_start;
 let boardPositionSize = 50;
 let pawnPositions = [];
 let boardPositions = [];
 let playerAmountButtons = [];
+let uiWindow = createRect(600, 200, 300, 300);
 
 function createRect(x, y, w, h) {
     let rectangle = {
@@ -33,13 +37,11 @@ function clearCanvas() {
 
 function draw() {
     clearCanvas();
-    for (let i = 0; i < boardPositions.length; i++) {
-        let pos = boardPositions[i];
-
-        g.fillStyle = "#004400";
-        g.fillRect(pos.x, pos.y, pos.h, pos.w);
-        g.fillStyle = "#FFFFFF";
-        g.fillText((i + 1) + "", pos.x, pos.y + 20);
+    if (gameState == gamestate_start) {
+        drawGameStart();
+    }
+    else if (gameState == gamesstate_ingame) {
+        drawIngame();
     }
 }
 
@@ -66,5 +68,41 @@ function createBoardPositions() {
     }
 }
 
-createBoardPositions();
+function drawGameStart() {
+    for (let i = 0; i < playerAmountButtons.length; i++) {
+        let pos = playerAmountButtons[i];
+
+        g.fillStyle = "#004400";
+        g.fillRect(pos.x, pos.y, pos.w, pos.h);
+        g.fillStyle = "#FFFFFF";
+        g.fillText((i + 1) + "", pos.x, pos.y + 20);
+        
+    }
+    g.fillText("Click the amount of players to start", uiWindow.x, uiWindow.y);
+};
+
+function drawIngame() {
+    for (let i = 0; i < boardPositions.length; i++) {
+        let pos = boardPositions[i];
+
+        g.fillStyle = "#004400";
+        g.fillRect(pos.x, pos.y, pos.w, pos.h);
+        g.fillStyle = "#FFFFFF";
+        g.fillText((i + 1) + "", pos.x, pos.y + 20);
+    }
+};
+
+
+function initGame() {
+    createBoardPositions();
+    for (let index = 0; index < 4; index++) {
+        let button = createRect(uiWindow.x + 5 + (index * 50), uiWindow.y + 50, 50, 50);
+        button.playerAmount = index + 1;
+        playerAmountButtons.push(button);
+    }
+
+}
+
+initGame();
 draw();
+drawGameStart();
