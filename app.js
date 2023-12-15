@@ -136,8 +136,32 @@ function loadImages() {
 function imagesLoaded() {
     initGame();
     draw();
+    canvas.addEventListener("click", (e) => { canvasClicked(e) });
 }
 
+function canvasClicked(mouseEvent) {
+    let mX = mouseEvent.clientX;
+    let mY = mouseEvent.client;
+    let hitButton = inRect(mX, mY, button);
+    if (gameState == gamestate_start) {
+        for (let i = 0; i < playerAmountButtons.length; i++) {
+            let button = playerAmountButtons[i];
+            if (hitButton == true) {
+                startGame(button.playerAmount)
+                break;
+            }
+        }
+    }
+}
+
+function inRect(px, py, rect) {
+    let result = (px >= rect.x && px <= rect.x2 && py >= rect.y && py <= rect.y2)
+    return result;
+}
+
+function startGame(playerAmount) {
+
+}
 
 loadImages();
 drawGameStart();
