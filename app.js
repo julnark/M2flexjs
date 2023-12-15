@@ -29,12 +29,12 @@ function createRect(x, y, w, h) {
         h: h,
     };
     return rectangle;
-}
+};
 
 function clearCanvas() {
     g.fillStyle = "lightslategray";
     g.fillRect(0, 0, canvas.width, canvas.height);
-}
+};
 
 function draw() {
     clearCanvas();
@@ -44,7 +44,7 @@ function draw() {
     else if (gameState == gamesstate_ingame) {
         drawIngame();
     }
-}
+};
 
 function createBoardPositions() {
     let x = 0;
@@ -67,7 +67,7 @@ function createBoardPositions() {
         }
         boardPositions.push(createRect(x, y, boardPositionSize, boardPositionSize));
     }
-}
+};
 
 function drawGameStart() {
     for (let i = 0; i < playerAmountButtons.length; i++) {
@@ -103,7 +103,7 @@ function initGame() {
         playerAmountButtons.push(button);
     }
 
-}
+};
 
 function loadImages() {
     let sources = [
@@ -131,13 +131,13 @@ function loadImages() {
 
         images[sources[i].replace("img/", "")] = img;
     }
-}
+};
 
 function imagesLoaded() {
     initGame();
     draw();
     canvas.addEventListener("click", (e) => { canvasClicked(e) });
-}
+};
 
 function canvasClicked(mouseEvent) {
     let mX = mouseEvent.clientX;
@@ -152,16 +152,28 @@ function canvasClicked(mouseEvent) {
             }
         }
     }
-}
+};
 
 function inRect(px, py, rect) {
     let result = (px >= rect.x && px <= rect.x2 && py >= rect.y && py <= rect.y2)
     return result;
-}
+};
 
 function startGame(playerAmount) {
+    gameState = gamesstate_ingame;
+    ingameState = ingamestate_start;
+    pawnPositions = [];//maak een nieuwe pionnen lijst
+    playerTurn = 0;
+    winner = -1;
+    console.log("playerAmount" + playerAmount);
+    for (let i = 0; i < playerAmount; i++) {
+    }
+    draw();
+};
 
-}
+function createPawn(playerI) {
+    return { boardI: 0, playerI: playerI };
+};
 
 loadImages();
 drawGameStart();
