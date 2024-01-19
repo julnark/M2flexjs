@@ -196,13 +196,13 @@ function startRoll() {
     ingameState = ingamestate_roll;
     lastRoll = -1
     draw();
-    setTimeout(endRoll,500);
- };
+    setTimeout(endRoll, 500);
+};
 
-function endRoll() { 
+function endRoll() {
     lastRoll = Math.floor(Math.random() * 6) + 1;
     draw();
-    ingameState=ingamestate_end;
+    ingameState = ingamestate_end;
 
 };
 
@@ -211,9 +211,13 @@ function drawUI() {
         if (lastRoll == -1) {
             g.fillText("rollen....", 20, 20);
         } else {
-            g.drawImage(images["dice"+lastRoll+".png"],5,5,50,50)
+            g.drawImage(images["dice" + lastRoll + ".png"], 5, 5, 50, 50)
         }
     }
+
+    if (ingamestate_start == ingameState) {
+        g.drawImage(images["pawn" + playerTurn + ".png"], 5,5,50,50)
+     }
 };
 
 loadImages();
