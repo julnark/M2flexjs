@@ -200,9 +200,10 @@ function startRoll() {
  };
 
 function endRoll() { 
-    lastRoll = 
+    lastRoll = Math.floor(Math.random() * 6) + 1;
     draw();
-    
+    ingameState=ingamestate_end;
+
 };
 
 function drawUI() {
@@ -210,7 +211,7 @@ function drawUI() {
         if (lastRoll == -1) {
             g.fillText("rollen....", 20, 20);
         } else {
-            g.drawImage(images["dice"+lastRoll+".png"])
+            g.drawImage(images["dice"+lastRoll+".png"],5,5,50,50)
         }
     }
 };
