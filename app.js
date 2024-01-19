@@ -17,6 +17,8 @@ let playerAmountButtons = [];
 let uiWindow = createRect(600, 200, 300, 300);
 let images = {};
 
+let lastRoll = -1;
+
 function createRect(x, y, w, h) {
     let rectangle = {
         x: x,
@@ -41,6 +43,7 @@ function draw() {
     }
     else if (gameState == gamesstate_ingame) {
         drawIngame();
+        drawUI();
     }
 };
 
@@ -51,15 +54,15 @@ function createBoardPositions() {
     for (let i = 0; i < path.length; i++) {
         if (path[i] == 1)//gaan naar rechts
         {
-            x += boardPositionSize+5;
+            x += boardPositionSize + 5;
         }
         else if (path[i] == 3)//gaan naar links
         {
-            x -= boardPositionSize+5;
+            x -= boardPositionSize + 5;
         }
         else if (path[i] == 0)//gaan hier naar boven
         {
-            y -= boardPositionSize+5;
+            y -= boardPositionSize + 5;
         }
         boardPositions.push(createRect(x, y, boardPositionSize, boardPositionSize));
     }
@@ -86,7 +89,7 @@ function drawIngame() {
         g.fillText((i + 1) + "", pos.x, pos.y + 20);
     }
     let snakesImage = images["snakes.png"];
-    g.drawImage(snakesImage, 0 ,55, 600, 600)
+    g.drawImage(snakesImage, 0, 55, 600, 600)
 
     for (let i = 0; i < pawnPositions.length; i++) {
         let pos = pawnPositions[i];
@@ -95,14 +98,14 @@ function drawIngame() {
         let boardpos = boardPositions[boardI];
         let pawnSize = boardPositionSize / 2;
 
-        if (i == 0){
+        if (i == 0) {
             g.drawImage(images["pawn" + i + ".png"], boardpos.x, boardpos.y, pawnSize, pawnSize)
-        } else if (i == 1){
-            g.drawImage(images["pawn" + i + ".png"], boardpos.x+pawnSize, boardpos.y, pawnSize, pawnSize)
-        } else if (i == 2){
-            g.drawImage(images["pawn" + i + ".png"], boardpos.x, boardpos.y+pawnSize, pawnSize, pawnSize)
-        } else if (i == 3){
-            g.drawImage(images["pawn" + i + ".png"], boardpos.x+pawnSize, boardpos.y+pawnSize, pawnSize, pawnSize)
+        } else if (i == 1) {
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x + pawnSize, boardpos.y, pawnSize, pawnSize)
+        } else if (i == 2) {
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x, boardpos.y + pawnSize, pawnSize, pawnSize)
+        } else if (i == 3) {
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x + pawnSize, boardpos.y + pawnSize, pawnSize, pawnSize)
         }
     }
 };
@@ -158,6 +161,12 @@ function canvasClicked(mouseEvent) {
             }
         }
     }
+    else if (gameState == gamesstate_ingame) {
+        if (ingameState == ingamestate_start) {
+            startRoll();
+        }
+    }
+
 };
 
 function inRect(px, py, rect) {
@@ -181,6 +190,29 @@ function startGame(playerAmount) {
 
 function createPawn(playerI) {
     return { boardI: 0, playerI: playerI };
+};
+
+function startRoll() {
+    ingameState = ingamestate_roll;
+    lastRoll = -1
+    draw();
+    setTimeout(endRoll,500);
+ };
+
+function endRoll() { 
+    lastRoll = 
+    draw();
+    
+};
+
+function drawUI() {
+    if (ingameState == ingamestate_roll) {
+        if (lastRoll == -1) {
+            g.fillText("rollen....", 20, 20);
+        } else {
+            g.drawImage(images["dice"+lastRoll+".png"])
+        }
+    }
 };
 
 loadImages();
