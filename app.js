@@ -1,11 +1,9 @@
 let canvas = document.getElementById("canvas");
 let g = canvas.getContext("2d");
 
-
 const gamestate_start = 0;
 const gamesstate_ingame = 1;
 const gamesstate_gameover = 2;
-
 const ingamestate_start = 0;
 const ingamestate_roll = 1;
 const ingamestate_end = 0;
@@ -50,20 +48,18 @@ function createBoardPositions() {
     let x = 0;
     let y = canvas.height - boardPositionSize;
     let path = [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-
     for (let i = 0; i < path.length; i++) {
-
         if (path[i] == 1)//gaan naar rechts
         {
-            x += boardPositionSize;
+            x += boardPositionSize+5;
         }
         else if (path[i] == 3)//gaan naar links
         {
-            x -= boardPositionSize;
+            x -= boardPositionSize+5;
         }
         else if (path[i] == 0)//gaan hier naar boven
         {
-            y -= boardPositionSize;
+            y -= boardPositionSize+5;
         }
         boardPositions.push(createRect(x, y, boardPositionSize, boardPositionSize));
     }
@@ -72,7 +68,6 @@ function createBoardPositions() {
 function drawGameStart() {
     for (let i = 0; i < playerAmountButtons.length; i++) {
         let pos = playerAmountButtons[i];
-
         g.fillStyle = "#004400";
         g.fillRect(pos.x, pos.y, pos.w, pos.h);
         g.fillStyle = "#FFFFFF";
@@ -80,29 +75,45 @@ function drawGameStart() {
         g.drawImage(images["pawn" + i + ".png"], pos.x, pos.y, pos.w, pos.h)
     }
     g.fillText("Click the amount of players to start", uiWindow.x, uiWindow.y);
-
 };
 
 function drawIngame() {
     for (let i = 0; i < boardPositions.length; i++) {
         let pos = boardPositions[i];
-
         g.fillStyle = "#004400";
         g.fillRect(pos.x, pos.y, pos.w, pos.h);
         g.fillStyle = "#FFFFFF";
         g.fillText((i + 1) + "", pos.x, pos.y + 20);
     }
-};
+    let snakesImage = images["snakes.png"];
+    g.drawImage(snakesImage, 0 ,55, 600, 600)
 
+    for (let i = 0; i < pawnPositions.length; i++) {
+        let pos = pawnPositions[i];
+        let boardI = pos.boardI;
+
+        let boardpos = boardPositions[boardI];
+        let pawnSize = boardPositionSize / 2;
+
+        if (i == 0){
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x, boardpos.y, pawnSize, pawnSize)
+        } else if (i == 1){
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x+pawnSize, boardpos.y, pawnSize, pawnSize)
+        } else if (i == 2){
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x, boardpos.y+pawnSize, pawnSize, pawnSize)
+        } else if (i == 3){
+            g.drawImage(images["pawn" + i + ".png"], boardpos.x+pawnSize, boardpos.y+pawnSize, pawnSize, pawnSize)
+        }
+    }
+};
 
 function initGame() {
     createBoardPositions();
     for (let index = 0; index < 4; index++) {
-        let button = createRect(uiWindow.x + 5 + (index * 50), uiWindow.y + 50, 50, 50);
-        button.playerAmount = index + 1;
-        playerAmountButtons.push(button);
+        let Button = createRect(uiWindow.x + 5 + (index * 50), uiWindow.y + 50, 50, 50);
+        Button.playerAmount = index + 1;
+        playerAmountButtons.push(Button);
     }
-
 };
 
 function loadImages() {
@@ -112,15 +123,11 @@ function loadImages() {
         "img/snakes.png",
         "img/trophy.png",
         "img/window.png",
-    ];
-
+    ]
     let scope = this;
-
     let loaded = 0;
     for (let i = 0; i < sources.length; i++) {
         let img = new Image();
-
-
         img.onload = function () {
             loaded++;
             if (loaded == sources.length) {
@@ -128,26 +135,25 @@ function loadImages() {
             }
         };
         img.src = sources[i];
-
         images[sources[i].replace("img/", "")] = img;
     }
 };
 
 function imagesLoaded() {
     initGame();
-    draw();
     canvas.addEventListener("click", (e) => { canvasClicked(e) });
+    draw();
 };
 
 function canvasClicked(mouseEvent) {
-    let mX = mouseEvent.clientX;
-    let mY = mouseEvent.client;
-    let hitButton = inRect(mX, mY, button);
     if (gameState == gamestate_start) {
+        let mX = mouseEvent.clientX;
+        let mY = mouseEvent.clientY;
         for (let i = 0; i < playerAmountButtons.length; i++) {
-            let button = playerAmountButtons[i];
+            const button = playerAmountButtons[i];
+            let hitButton = inRect(mX, mY, button);
             if (hitButton == true) {
-                startGame(button.playerAmount)
+                startGame(button.playerAmount);
                 break;
             }
         }
@@ -162,11 +168,13 @@ function inRect(px, py, rect) {
 function startGame(playerAmount) {
     gameState = gamesstate_ingame;
     ingameState = ingamestate_start;
-    pawnPositions = [];//maak een nieuwe pionnen lijst
+    pawnPositions = [];
     playerTurn = 0;
     winner = -1;
-    console.log("playerAmount" + playerAmount);
+    console.log("playerAmount " + playerAmount);
     for (let i = 0; i < playerAmount; i++) {
+        let poppetje = createPawn(i)
+        pawnPositions.push(poppetje)
     }
     draw();
 };
